@@ -1,5 +1,7 @@
 from pydub import AudioSegment
 
+from bot_start import bot
+
 
 async def get_duration_document(path):
     audio = AudioSegment.from_file(path)
@@ -18,25 +20,32 @@ async def seconds_to_hms(seconds):
 async def split_message(message: str) -> list:
     return [message[i:i + 4000] for i in range(0, len(message), 4000)]
 
+
 languages = [
-    ["ru", "en"],
-    ["es", "en"],
-    ["fr", "en"],
-    ["de", "en"],
-    ["zh", "en"],
-    ["ja", "en"],
-    ["pt", "en"],
-    ["it", "en"],
-    ["ko", "en"],
-    ["ar", "en"],
-    ["hi", "en"],
-    ["bn", "en"],
-    ["pa", "en"],
-    ["jv", "en"],
-    ["vi", "en"],
-    ["te", "en"],
-    ["mr", "en"],
-    ["ta", "en"],
-    ["tr", "en"],
-    ["fa", "en"]
+    "ru",
+    "es",
+    "fr",
+    "de",
+    "zh",
+    "ja",
+    "pt",
+    "it",
+    "ko",
+    "ar",
+    "hi",
+    "bn",
+    "pa",
+    "jv",
+    "vi",
+    "te",
+    "mr",
+    "ta",
+    "tr",
+    "fa"
 ]
+
+
+async def download_file(file_id: str, destination: str) -> None:
+    # Получаем файл
+    file = await bot.get_file(file_id)
+    file.download(destination)

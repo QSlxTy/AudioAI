@@ -1,10 +1,7 @@
 from docx import Document
 from openai import OpenAI
-
 from src.config import BotConfig
 from utils.GPT.prompts import prompt_meeting_minutes, prompt_analysis, prompt_summary, prompt_tasks
-
-
 
 
 def extract_text_from_docx(file_path):
@@ -17,7 +14,6 @@ def extract_text_from_docx(file_path):
 
 client = OpenAI(
     api_key=BotConfig.gpt_token)
-
 
 async def create_theses_from_transcription(summary_format, decode_path):
     text = extract_text_from_docx(decode_path)

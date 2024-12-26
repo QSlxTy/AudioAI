@@ -1,4 +1,4 @@
-from handlers.user import start, tariff_handler, get_audio, decoding_audio, support, buy_balance, promocode_menu, decoding_audio_other_files
+from handlers.user import start, tariff_handler, get_audio, decoding_audio, support, buy_balance, promocode_menu
 from handlers.user.decoding_settings import choose_decoding, choose_lang, choose_speakers, choose_summary, choose_words
 
 
@@ -15,4 +15,3 @@ def register_user_handler(dp):
     support.register_handler(dp)
     buy_balance.register_handler(dp)
     promocode_menu.register_handler(dp)
-    decoding_audio_other_files.register_handler(dp)

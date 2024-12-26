@@ -6,6 +6,10 @@ async def back_menu_kb():
     builder.button(text='·В главное меню·', callback_data='main_menu')
     return builder.as_markup()
 
+async def cancel_kb():
+    builder = InlineKeyboardBuilder()
+    builder.button(text='·Отмена·', callback_data='main_menu')
+    return builder.as_markup()
 
 async def tariff_list_kb():
     builder = InlineKeyboardBuilder()
@@ -28,23 +32,16 @@ async def back_tariff_menu_kb():
 async def settings_audio_kb():
     builder = InlineKeyboardBuilder()
     builder.button(text='·Продолжить·', callback_data='go_decoding')
+    builder.button(text='·Загрузить ещё файл·', callback_data='more_audio')
     builder.button(text='·Отменить·', callback_data='main_menu')
     builder.button(text='·Указать язык·', callback_data='choose_lang')
     builder.button(text='·Количество спикеров·', callback_data='count_speakers')
     builder.button(text='·Добавить слова·', callback_data='add_word')
+    builder.button(text='·Формат саммари·', callback_data='format_summary')
+
     builder.adjust(2, 1, 1, 1, 1, 1)
     return builder.as_markup()
 
-
-async def settings_other_audio_kb():
-    builder = InlineKeyboardBuilder()
-    builder.button(text='·Продолжить·', callback_data='go_other_decoding')
-    builder.button(text='·Отменить·', callback_data='main_menu')
-    builder.button(text='·Указать язык·', callback_data='choose_lang')
-    builder.button(text='·Количество спикеров·', callback_data='count_speakers')
-    builder.button(text='·Добавить слова·', callback_data='add_word')
-    builder.adjust(2, 1, 1, 1, 1, 1)
-    return builder.as_markup()
 
 
 async def choose_lang_kb():

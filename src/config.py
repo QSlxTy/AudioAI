@@ -37,6 +37,12 @@ class BotConfig:
     yookassa_id = getenv('YOOKASSA_ID')
     gpt_token = getenv('GPT_API_KEY')
 
+    yandex_access_key: str = getenv('YANDEX_ACCESS_KEY')
+    yandex_secret_key: str = getenv('YANDEX_SECRET_KEY')
+    yandex_region: str = getenv('YANDEX_REGION')
+    yandex_bucket_name: str = getenv('YANDEX_BUCKET')
+
+
 @dataclass
 class Configuration:
     debug = bool(getenv('DEBUG'))
@@ -54,5 +60,4 @@ class UserBotConfig:
     api_hash = getenv('API_HASH')
     telegram_id = getenv('TELEGRAM_ID')
     bot_username = getenv('BOT_USERNAME')
-    bot_password = getenv('BOT_PASSWORD')
 conf = Configuration()
