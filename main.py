@@ -47,6 +47,6 @@ if __name__ == '__main__':
             folder_path = os.path.join('root/bot_audio_v2/local', folder)
             if os.path.isdir(folder_path):
                 shutil.rmtree(folder_path)
-                os.makedirs(folder_path)
-
+                os.makedirs(folder_path, exist_ok=True)
+        
         logging.info('Bot stopped')

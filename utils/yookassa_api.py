@@ -68,6 +68,5 @@ async def check_payment_yookassa(payment_id, user_id, seconds, session_maker):
             return False
     except Exception as _ex:
         logger.error(f'Payment check ERROR --> {_ex}')
-        await update_user_db(user_id, {'status': 'error'}, session_maker)
         await update_payment_db(payment_id, {'status': 'success'}, session_maker)
         return False

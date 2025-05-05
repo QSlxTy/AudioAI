@@ -13,7 +13,7 @@ class Payment(AbstractModel):
     telegram_id: Mapped[int] = mapped_column(BigInteger())
     payment_id: Mapped[str] = mapped_column(String(39), unique=True)
     amount: Mapped[float] = mapped_column(Float())
-    created_at: Mapped[datetime] = mapped_column(default=datetime.now())
+    created_at: Mapped[datetime] = mapped_column()
     tariff_name: Mapped[str] = mapped_column(Text())
     email: Mapped[str] = mapped_column(Text())
     status: Mapped[str] = mapped_column(Text())
@@ -24,11 +24,11 @@ async def create_payment_db(telegram_id: str, email: str, payment_id: str, amoun
     async with session_maker() as session:
         async with session.begin():
             payment = Payment(
+                created_at=datetime.now(),
                 telegram_id=telegram_id,
                 payment_id=payment_id,
                 amount=amount,
                 tariff_name=tariff_name,
-                created_at=datetime.now(),
                 email=email,
                 status='in proccess'
             )

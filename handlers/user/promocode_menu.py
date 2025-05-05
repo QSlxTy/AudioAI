@@ -12,7 +12,7 @@ from utils.states.user import FSMPromo
 async def menu_promo(call: types.CallbackQuery, state: FSMContext):
     await state.set_state(FSMPromo.menu_promo)
     await call.message.answer(
-        text='<b>Пожалуйста, введите промокод для получения дополнительных минут</b>',
+        text="🎁 Активируйте ваш <b>промокод</b>, чтобы получить дополнительные минуты! Мы любим делать вам подарки. 😊",
         reply_markup=await back_tariff_menu_kb()
     )
 
@@ -20,7 +20,7 @@ async def menu_promo(call: types.CallbackQuery, state: FSMContext):
 async def get_promo(message: types.Message, session_maker: sessionmaker):
     if await is_used_promo_exists_db(message.text, message.from_user.id, session_maker):
         await message.answer(
-            text='<b>Вы уже использовали этот промокод</b>',
+            text="😅 Похоже, вы уже <b>активировали этот промокод</b>. Попробуйте ввести другой!",
             reply_markup=await back_menu_kb()
         )
     else:
@@ -33,17 +33,16 @@ async def get_promo(message: types.Message, session_maker: sessionmaker):
                                    session_maker)
             await update_promo_db(message.text, {'count': promo_info.count - 1}, session_maker)
             await message.answer(
-                text=f'<b>Промокод успешно активирован, вы получили '
-                     f'<code>{round(promo_info.seconds / 60, 2)} минут</code></b>',
+                text=f"🎉 Ура! Вы получили <b>{round(promo_info.seconds / 60, 2)} минут</b> на свой баланс! Пользуйтесь с удовольствием. 🥰",
                 reply_markup=await back_menu_kb()
             )
         else:
             await message.answer(
-                text='<b>К сожалению такого промокода несуществует</b>',
+                text='<b>😅 Не могу найти такой промокод, видимо его нет</b>',
                 reply_markup=await back_menu_kb()
             )
 
 
 def register_handler(dp: Dispatcher):
     dp.callback_query.register(menu_promo, F.data == 'go_promo')
-    dp.message.register(get_promo, FSMPromo.menu_promo, F.content_type == 'text')
+    dp.message.register(get_promo, FSMPromo.menu_promo, F.content_type == 'text',~F.text.startswith('/'))

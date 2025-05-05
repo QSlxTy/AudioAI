@@ -26,7 +26,7 @@ async def create_minute_db(telegram_id: int, session_maker: sessionmaker) -> [Mi
         async with session.begin():
             minute = Minute(
                 telegram_id=telegram_id,
-                remaining_seconds=60000,
+                remaining_seconds=6000,
             )
             try:
                 session.add(minute)

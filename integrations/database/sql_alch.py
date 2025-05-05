@@ -5,6 +5,7 @@ from sqlalchemy.orm import sessionmaker
 
 from integrations.database.models.action import Action
 from integrations.database.models.decoding import Decoding
+from integrations.database.models.errors import Errors
 from integrations.database.models.minute import Minute
 from integrations.database.models.payment import Payment
 from integrations.database.models.promo import Promo
@@ -37,7 +38,8 @@ class Database:
             payment: Payment = None,
             promo: Promo = None,
             tariff: Tariff = None,
-            used_promo: UsedPromo = None
+            used_promo: UsedPromo = None,
+            errors: Errors = None
 
     ):
         self.session = session
@@ -49,6 +51,7 @@ class Database:
         self.promo = promo or Promo()
         self.tariff = tariff or Tariff()
         self.used_promo = used_promo or UsedPromo()
+        self.errors = errors or Errors()
 
 
 async def init_models(engine):
@@ -61,3 +64,4 @@ async def init_models(engine):
         await conn.run_sync(Promo.metadata.create_all)
         await conn.run_sync(Tariff.metadata.create_all)
         await conn.run_sync(UsedPromo.metadata.create_all)
+        await conn.run_sync(Errors.metadata.create_all)

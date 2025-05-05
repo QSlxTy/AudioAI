@@ -12,9 +12,11 @@ class User(AbstractModel):
 
     telegram_id: Mapped[int] = mapped_column(BigInteger(), unique=True)
     telegram_username: Mapped[str] = mapped_column(Text, default=None)
-    date_registration: Mapped[datetime] = mapped_column(default=datetime.now())
-    last_active: Mapped[datetime] = mapped_column(default=datetime.now())
+    date_registration: Mapped[datetime] = mapped_column()
+    last_active: Mapped[datetime] = mapped_column()
+    utm: Mapped[str] = mapped_column(Text(), default=None)
     is_admin: Mapped[bool] = mapped_column(default=False)
+    is_block: Mapped[bool] = mapped_column(default=False)
 
 
 async def get_user_db(select_by: dict, session_maker: sessionmaker) -> User:
@@ -26,12 +28,15 @@ async def get_user_db(select_by: dict, session_maker: sessionmaker) -> User:
             return result.scalars().one()
 
 
-async def create_user_db(user_id: int, username: str, session_maker: sessionmaker) -> [User, Exception]:
+async def create_user_db(user_id: int, username: str,utm: str, session_maker: sessionmaker) -> [User, Exception]:
     async with session_maker() as session:
         async with session.begin():
             user = User(
+                date_registration=datetime.now(),
+                last_active=datetime.now(),
                 telegram_id=user_id,
                 telegram_username=username,
+                utm=utm
             )
             try:
                 session.add(user)
@@ -52,3 +57,11 @@ async def update_user_db(telegram_id: int, data: dict, session_maker: sessionmak
         async with session.begin():
             await session.execute(update(User).where(User.telegram_id == telegram_id).values(data))
             await session.commit()
+
+async def get_all_users_db(session_maker: sessionmaker) -> [User]:
+    async with session_maker() as session:
+        async with session.begin():
+            result = await session.execute(
+                select(User)
+            )
+            return result.scalars().all()

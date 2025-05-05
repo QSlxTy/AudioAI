@@ -2,7 +2,7 @@ from typing import Callable, Dict, Any, Awaitable, Union
 
 from aiogram import BaseMiddleware
 from aiogram.types import Message, CallbackQuery
-
+from bot_start import logger
 from integrations.database.models.minute import create_minute_db
 from integrations.database.models.user import is_user_exists_db, create_user_db
 
@@ -25,11 +25,33 @@ class RegisterCheck(BaseMiddleware):
                     username = 'None'
                 else:
                     username = event.from_user.username
-                await create_user_db(user_id=event.from_user.id,
-                                     username=username,
-                                     session_maker=session_maker)
-                await create_minute_db(telegram_id=event.from_user.id,
-                                       session_maker=session_maker)
+                if len(event.text.split(' ')) > 1:
+                    try:
+                        logger.info(f'Used UTM Mark --> {event.text.split(" ")[1]} --> {event.from_user.id}')
+                    except Exception:
+                        pass
+                    try:
+                        await create_user_db(user_id=event.from_user.id,
+                                             username=username,
+                                             session_maker=session_maker,
+                                             utm=event.text.split(' ')[1])
+                        await create_minute_db(telegram_id=event.from_user.id,
+                                               session_maker=session_maker)
+                    except Exception:
+                        await create_user_db(user_id=event.from_user.id,
+                                             username=username,
+                                             session_maker=session_maker,
+                                             utm='Error')
+                        await create_minute_db(telegram_id=event.from_user.id,
+                                               session_maker=session_maker)
+                else:
+                    await create_user_db(user_id=event.from_user.id,
+                                         username=username,
+                                         session_maker=session_maker,
+                                         utm='None')
+                    await create_minute_db(telegram_id=event.from_user.id,
+                                           session_maker=session_maker)
+
                 return await handler(event, data)
             else:
                 return await handler(event, data)

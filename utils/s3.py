@@ -3,9 +3,9 @@ from uuid import uuid4
 
 import aioboto3
 
-from bot_start import logger
+from bot_start import logger, bot
 from src.config import BotConfig
-
+import aiofiles
 
 async def upload_photo_to_yandex_s3(file_path, folder: str = "photos_georgy_MJ"
                                     ) -> str:
@@ -24,9 +24,8 @@ async def upload_photo_to_yandex_s3(file_path, folder: str = "photos_georgy_MJ"
 
         # Создаём сессию aioboto3
         session = aioboto3.Session()
-        with open(file_path, 'rb') as file:
-            file_bytes = file.read()
-            file.close()
+        async with aiofiles.open(file_path, 'rb') as file:
+            file_bytes = await file.read()
         async with session.resource(
                 "s3",
                 endpoint_url='https://storage.yandexcloud.net/',

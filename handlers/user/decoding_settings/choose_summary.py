@@ -1,33 +1,49 @@
 from aiogram import types, Dispatcher, F
 from aiogram.fsm.context import FSMContext
 
-from keyboards.user.user_keyboard import choose_summary_kb, go_decode_settings_kb
+from bot_start import logger
+from keyboards.user.user_keyboard import choose_summary_kb
 from src.big_text import prompts_list_txt
 
 
-async def choose_summary(call: types.CallbackQuery):
-    await call.message.answer(
+async def choose_summary(call: types.CallbackQuery, state: FSMContext):
+    logger.info(f'Summary settings --> {call.from_user.id}')
+    data = await state.get_data()
+    msg = await data['msg'].edit_text(
         text=prompts_list_txt,
-        reply_markup=await choose_summary_kb()
+        reply_markup=await choose_summary_kb(data['format_summary'])
     )
+    await state.update_data(msg=msg)
 
 
 async def get_summary(call: types.CallbackQuery, state: FSMContext):
-    if '1' in call.data:
-        format_summary = 'Протокол встречи'
-    elif '2' in call.data:
-        format_summary = 'Краткая выжимка'
-    elif '3' in call.data:
-        format_summary = 'Анализ диалога'
-    else:
-        format_summary = 'Перечень действий'
-
-    await call.message.answer(
-        text=
-        f'<b>Запомнил формат расшифровки:</b> <code>{format_summary}</code>',
-        reply_markup=await go_decode_settings_kb()
+    data = await state.get_data()
+    list_summary = data['format_summary']
+    if int(call.data.split(':')[1]) == 2:
+        if 'Саммари' in list_summary:
+            list_summary.remove('Саммари')
+        else:
+            list_summary.append('Саммари')
+    if int(call.data.split(':')[1]) == 1:
+        if 'Протокол встречи' in list_summary:
+            list_summary.remove('Протокол встречи')
+        else:
+            list_summary.append('Протокол встречи')
+    if int(call.data.split(':')[1]) == 4:
+        if 'Анализ диалога' in list_summary:
+            list_summary.remove('Анализ диалога')
+        else:
+            list_summary.append('Анализ диалога')
+    if int(call.data.split(':')[1]) == 3:
+        if 'Перечень действий' in list_summary:
+            list_summary.remove('Перечень действий')
+        else:
+            list_summary.append('Перечень действий')
+    msg = await data['msg'].edit_text(
+        text=prompts_list_txt,
+        reply_markup=await choose_summary_kb(data['format_summary'])
     )
-    await state.update_data(format_summary=format_summary)
+    await state.update_data(msg=msg)
 
 
 def register_handler(dp: Dispatcher):

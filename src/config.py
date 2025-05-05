@@ -2,16 +2,14 @@ import logging
 from dataclasses import dataclass
 from os import getenv
 
-from sqlalchemy.engine import URL
-
 from dotenv import load_dotenv
+from sqlalchemy.engine import URL
 
 load_dotenv()
 
 
 @dataclass
 class DatabaseConfig:
-
     name: str | None = getenv('PYMYSQL_DATABASE')
     user: str | None = getenv('PYMYSQL_USER')
     passwd: str | None = getenv('PYMYSQL_PASSWORD', None)
@@ -29,6 +27,7 @@ class DatabaseConfig:
             port=self.port,
             host=self.host,
         ).render_as_string(hide_password=False)
+
 
 @dataclass
 class BotConfig:
@@ -49,15 +48,12 @@ class Configuration:
     logging_level = int(getenv('LOGGING_LEVEL', logging.INFO))
     yadisk_token = getenv('YADISK_TOKEN')
     replicate_token = getenv('REPLICATE_TOKEN')
-
+    main_path = getenv('MAIN_PATH')
     db = DatabaseConfig()
     bot = BotConfig()
+    main_photo_path = getenv('MAIN_PHOTO_URL')
+    first_photo_url = getenv('FIRST_STEP_PHOTO_URL')
+    second_photo_url = getenv('SECOND_STEP_PHOTO_URL')
 
 
-@dataclass
-class UserBotConfig:
-    api_id = getenv('API_ID')
-    api_hash = getenv('API_HASH')
-    telegram_id = getenv('TELEGRAM_ID')
-    bot_username = getenv('BOT_USERNAME')
 conf = Configuration()
